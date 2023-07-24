@@ -186,7 +186,8 @@ impl SpendValidatingKey {
         <[u8; 32]>::from(&self.0)
     }
 
-    pub(crate) fn from_bytes(bytes: &[u8]) -> Option<Self> {
+    /// Create from bytes
+    pub fn from_bytes(bytes: &[u8]) -> Option<Self> {
         <[u8; 32]>::try_from(bytes)
             .ok()
             .and_then(|b| {
@@ -313,6 +314,17 @@ pub struct FullViewingKey {
     ak: SpendValidatingKey,
     nk: NullifierDerivingKey,
     rivk: CommitIvkRandomness,
+}
+
+impl FullViewingKey {
+    /// Create FVK from the given sk and ak.
+    pub fn from_sk_ak(sk: &SpendingKey, ak: SpendValidatingKey) -> Self {
+        FullViewingKey {
+            ak: ak,
+            nk: sk.into(),
+            rivk: sk.into(),
+        }
+    }
 }
 
 impl From<&SpendingKey> for FullViewingKey {
